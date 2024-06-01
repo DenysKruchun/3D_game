@@ -34,4 +34,5 @@ for z in range(-8,8):
 sky = Sky(texture="sky_sunset")
 player = FirstPersonController()
 tree = Entity(model = "assets/minecraft_tree/scene", scale =3,  origin_y=0.5)
+house = Entity(model = "assets/minecraft_tree/minecraft_house/scene.gltf",scale = 3, origin_y = 0.5)
 app.run()
