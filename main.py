@@ -10,6 +10,7 @@ import pickle
 app = Ursina()
 from settings import MAP_SIZE
 from models import Tree,Block,Chest
+from ui import Menu
 
 Entity.default_shader = lit_with_shadows_shader 
 
@@ -24,6 +25,7 @@ class Controller(Entity):
         pivot = Entity()
         DirectionalLight(parent=pivot, y=3, z=3, shadows=True,rotation = (45,-45,45))
         window.fullscreen = True
+        self.menu = Menu(self)
 
     def new_game(self, ):
 
@@ -47,8 +49,14 @@ class Controller(Entity):
             for block in Block.list:
                 pickle.dump(block.position,f) 
                 pickle.dump(block.id,f) 
-
-    
+            pickle.dump(len(Tree.list),f)
+            for tree in Tree.list:
+                pickle.dump(tree.position,f)
+                pickle.dump(tree.scale,f)
+            pickle.dump(len(Chest.list),f)
+            for chest in Chest.list:
+                pickle.dump(chest.position,f)
+            
     def input (self, key):
         if key == "o":
             self.save_game()
@@ -56,10 +64,12 @@ class Controller(Entity):
             self.load_game()
     
     def load_game(self):
-        for block in Block.list:
+        for block in Block.list + Tree.list + Chest.list:
             destroy(block)
         Block.list = []
-
+        Chest.list = []
+        Tree.list = []
+  
         with open("savings", "rb") as f:
             self.player.position = pickle.load(f)
             k = pickle.load(f)
@@ -67,10 +77,23 @@ class Controller(Entity):
                 block_pos = pickle.load(f)
                 Block.id = pickle.load(f) 
                 block = Block(position=block_pos)
+            k_tree = pickle.load(f)
+            for i in range (k_tree):
+                tree_position = pickle.load(f)
+                tree_scale = pickle.load(f)
+                tree = Tree(*tree_position)
+                tree.scale = tree_scale
+
+            k_chest = pickle.load(f)   
+            for i in range (k_chest):
+                chest_position = pickle.load(f)
+                chest = Chest(*chest_position)
+              
+
 
 
 # ground = Entity(model="plane", collider='box', texture="grass",
 #                 scale=64, texture_scale=(4, 4))
 game = Controller()
-game.new_game()
+# game.new_game()
 app.run()

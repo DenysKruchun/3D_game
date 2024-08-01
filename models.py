@@ -29,6 +29,7 @@ class Block(Button):
         if self.hovered:
             if key == "right mouse down":
                 destroy(mouse.hovered_entity)
+                Block.list.remove(self)
             if key == "left mouse down":
                 block = Block(self.position + mouse.normal)
         for i in range (9) :
@@ -38,11 +39,14 @@ class Block(Button):
 
 
 class Tree(Entity):
+    list = []
     def __init__(self, x, y, z ):
         super().__init__(parent=scene, model="assets/minecraft_tree/scene",
                          position=(x, y, z), scale=randint(4, 7),  origin_y=0.5, collider='box')
+        Tree.list.append(self)
 
 class Chest(Entity):
+    list = []
     def __init__(self, x, y, z,):
-         super().__init__(parent=scene,model = "assets/minecraft_chest/scene",position = (x,y + 0.9 ,z), scale = 0.5,origin_y=0.5, collider = 'box')
-
+        super().__init__(parent=scene,model = "assets/minecraft_chest/scene",position = (x,y + 0.9 ,z), scale = 0.5,origin_y=0.5, collider = 'box')
+        Chest.list.append(self)
